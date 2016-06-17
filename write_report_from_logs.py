@@ -6,10 +6,9 @@ import os, fnmatch	# for finding the filename of the Report file
 apr_versions = [3.0, 3.1, 4.0]
 earliest_version = apr_versions[0]
 latest_version = apr_versions[-1]
-number_of_slots = 16
-slot_numbers = list(range(1, number_of_slots + 1))
-IPC_slots = []
-VMS_slots = list(set(slot_numbers) - set(IPC_slots))
+slot_numbers = [5,6]
+IPC_slots = [5]
+VMS_slots = [6]
 ##################### variables to tune based on future changes #####################
 
 ################################## util functions ###################################
@@ -30,7 +29,7 @@ def read_csv(apr_version, slot_number, log_file_directories):
 					log_file_contents.append(row)
 		return log_file_contents
 	except OSError as err:
-		print("The file {} does not exists!!!".format(log_file_name))
+		print("\n\nThe file {} does not exists!!!\n\n".format(log_file_name))
 		raise
 
 def collect_from_csv(log_file_directories):
@@ -39,7 +38,7 @@ def collect_from_csv(log_file_directories):
 	VMS_records = {apr_version: [] for apr_version in apr_versions}
 	for apr_version in apr_versions:
 		for slot_number in slot_numbers:
-			log_file_contents = read_csv(apr_version, log_number, log_file_directories)
+			log_file_contents = read_csv(apr_version, slot_number, log_file_directories)
 			if slot_number in IPC_slots:
 				IPC_records[apr_version].extend(log_file_contents)
 			else: # VMS
@@ -66,13 +65,15 @@ def write_report(report_name_pattern = "PerformanceData_APR*.xlsx", report_direc
 		log_file_directories: the directory that holds the log csv file
 			default = "logs"
 	"""
+	# extract records from log files
 	IPC_records, VMS_records = collect_from_csv(log_file_directories)
-	
 	# sort each list in each dict by the first column
+	for apr_version in apr_versions:
+    	IPC_records[apr_version] = sorted(IPC_records[apr_version], key=lambda elem: elem[0])
+    	VMS_records[apr_version] = sorted(VMS_records[apr_version], key=lambda elem: elem[0])
 	# write to the report file
 
 ################################### main function ###################################
 if __name__ == '__main__':
     # write_report()
-    results = read_csv(3.0, 5, "logs")
-    print(len(results))
+    
