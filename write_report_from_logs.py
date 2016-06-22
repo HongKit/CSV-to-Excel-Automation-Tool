@@ -2,14 +2,18 @@
 """ No new/depricated tests between different versions """
 """ Will be fixed in later versions"""
 
-
 from openpyxl import load_workbook	# for writing the report
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Alignment
+from openpyxl.styles import PatternFill, Alignment, Font, Border, Side
+from openpyxl.cell import get_column_letter
+from openpyxl.chart import Reference, Series, BarChart3D
+from openpyxl.chart.layout import Layout, ManualLayout
 import csv 							# for reading from csv log files
 import os, fnmatch					# for finding the filename of the Report file
 from collections import Counter		# for counting number of times a test is run
 from statistics import mean
+from itertools import chain
+from textwrap import fill
 
 ##################### variables to tune based on future changes #####################
 apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
@@ -24,14 +28,21 @@ slot_numbers = IPC_slots + VMS_slots + MKB_slots
 ##################### variables to tune based on future changes #####################
 
 ###################################### styles #######################################
-light_green_fill	= PatternFill(fill_type='solid', start_color='FFDCEDC8', end_color='FFDCEDC8')
-light_blue_fill		= PatternFill(fill_type='solid', start_color='FF4FC3F7', end_color='FF4FC3F7')
-light_red_fill		= PatternFill(fill_type='solid', start_color='FFFFEBEE', end_color='FFFFEBEE')
+pale_green_fill		= PatternFill(fill_type='solid', start_color='FFDCEDC8', end_color='FFDCEDC8')
+pale_red_fill		= PatternFill(fill_type='solid', start_color='FFFFEBEE', end_color='FFFFEBEE')
 pale_blue_fill  	= PatternFill(fill_type='solid', start_color='FFBBDEFB', end_color='FFBBDEFB')
-green_fill 			= PatternFill(fill_type='solid', start_color='FF689F38', end_color='FF689F38')
-red_fill 			= PatternFill(fill_type='solid', start_color='FFF44336', end_color='FFF44336')
-blue_fill 			= PatternFill(fill_type='solid', start_color='FF1976D2', end_color='FF1976D2')
+pale_purple_fill	= PatternFill(fill_type='solid', start_color='FFD1C4E9', end_color='FFD1C4E9')
+light_blue_fill		= PatternFill(fill_type='solid', start_color='FF4FC3F7', end_color='FF4FC3F7')
+green_fill 			= PatternFill(fill_type='solid', start_color='FF81C784', end_color='FF81C784')
+red_fill 			= PatternFill(fill_type='solid', start_color='FFE57373', end_color='FFE57373')
+blue_fill 			= PatternFill(fill_type='solid', start_color='FF7986CB', end_color='FF7986CB')
+orange_fill			= PatternFill(fill_type='solid', start_color='FFFB8C00', end_color='FFFB8C00')
+grey_fill 			= PatternFill(fill_type='solid', start_color='FFECEFF1', end_color='FFECEFF1')
+metalic_green_fill	= PatternFill(fill_type='solid', start_color='FF80CBC4', end_color='FF80CBC4')
 center_alignment 	= Alignment(horizontal="center", vertical="center")
+small_font			= Font(size=8)
+black_side  		= Side(border_style='thin', color='FF000000')
+black_border		= Border(left=black_side, right=black_side, top=black_side, bottom=black_side)
 ###################################### styles #######################################
 
 ############################### data sheet functions ################################
@@ -107,7 +118,6 @@ def check_and_pad(IPC_records, VMS_records, MKB_records):
 			elif counter3[(tc, tc_name)] > counter1[(tc, tc_name)] and counter3[(tc, tc_name)] > counter2[(tc, tc_name)]:
 				IPC_records[apr_version] = pad(IPC_records[apr_version], tc, tc_name, counter3[(tc, tc_name)] - counter1[(tc, tc_name)])
 				VMS_records[apr_version] = pad(VMS_records[apr_version], tc, tc_name, counter3[(tc, tc_name)] - counter2[(tc, tc_name)])
-
 	return IPC_records, VMS_records, MKB_records
 
 def write_header(ws, ord_mac):
@@ -176,12 +186,19 @@ def format_sheet(ws):
 		ws.column_dimensions[letter].width = 15
 
 	for i in range(2, ws.max_row+1):
-		paint_and_format_data(ws, ord_VMS, red_zone_width, light_green_fill, i)
-		paint_and_format_data(ws, ord_IPC, red_zone_width, light_red_fill, i)
+		paint_and_format_data(ws, ord_VMS, red_zone_width, pale_green_fill, i)
+		paint_and_format_data(ws, ord_IPC, red_zone_width, pale_red_fill, i)
 		paint_and_format_data(ws, ord_MKB, red_zone_width, pale_blue_fill, i)
 		if i == 2 or ws["A{}".format(i)].value != ws["A{}".format(i-1)].value:
 			ws['A{}'.format(i)].fill = light_blue_fill
 			ws['B{}'.format(i)].fill = light_blue_fill
+	
+	for i in range(1, ws.max_column+1):
+		letter = get_column_letter(i)
+		for j in range(1, ws.max_row+1):
+			ws["{}{}".format(letter,j)].border = black_border
+			if j == 1:
+				ws["{}{}".format(letter,j)].alignment = Alignment(wrapText=True)
 	
 	ws.row_dimensions[1].height = 60
 	ws.column_dimensions["A"].width = 6
@@ -212,10 +229,10 @@ def write_header_FP(ws):
 	apr_versions_to_write = [[apr_version] + 5 * [None] for apr_version in apr_versions]
 	apr_versions_to_write = [item for sublist in apr_versions_to_write for item in sublist]
 	rows = [
-    	['Test Case ID', 'Test Case Name'] + apr_versions_to_write + ["Steps"],
+    	['Test \nCase ID', 'Test Case Name'] + apr_versions_to_write + ["Steps"],
     	[None, None] + ["UP Time: 1 Hour-DVR: 1% full", None, None, None, None, None] * n,
     	[None, None] + ["VMS", None, "IPC", None, "Mockingbird", None] * n,
-    	[None, None] + ["Mean(Sec)","Standard Deviation( σ)"] * 3 * n,
+    	[None, None] + ["Mean(Sec)","STDEV(σ)"] * 3 * n,
 	]
 	for row in rows:
 	    ws.append(row)
@@ -226,9 +243,7 @@ def read_from_des_txt(tc):
 	f.close()
 	return result
 
-def write_front_page(front_ws, data_ws):
-	write_header_FP(front_ws)
-
+def write_front_page_data(front_ws, data_ws):
 	test_head_row_numbers = []
 	tc_s = []
 	tc_names = []
@@ -263,6 +278,109 @@ def write_front_page(front_ws, data_ws):
 				format(MKB_chars[j], test_head_row_numbers[i], test_head_row_numbers[i+1]))
 		row.append(read_from_des_txt(tc_s[i]))
 		front_ws.append(row)
+
+def format_FP(front_ws):
+	for i in range(1, front_ws.max_column+1):
+		letter = get_column_letter(i)
+		num_vers = len(apr_versions)
+		if i in range(1, front_ws.max_column):
+			for j in range(1, front_ws.max_row+1):
+				front_ws["{}{}".format(letter, j)].alignment = center_alignment
+		if i in [1, 2, 3 + 6 * num_vers]:
+			for j in range(1, front_ws.max_row+1):
+				front_ws["{}{}".format(letter, j)].fill = pale_green_fill
+		if i in range(3, 3 + 6 * num_vers, 2):
+			front_ws["{}1".format(letter)].fill = orange_fill
+			front_ws["{}2".format(letter)].fill = grey_fill
+			for j in range(5, front_ws.max_row+1):
+				front_ws["{}{}".format(letter, j)].fill = pale_blue_fill
+				front_ws["{}{}".format(letter, j)].number_format = '0.00'
+		if i in range(4, 3 + 6 * num_vers, 2):
+			for j in range(5, front_ws.max_row+1):
+				front_ws["{}{}".format(letter, j)].fill = pale_purple_fill
+				front_ws["{}{}".format(letter, j)].number_format = '0.00'
+		if i in chain(range(3, 3 + 6 * num_vers, 6), range(4, 3 + 6 * num_vers, 6)):
+			front_ws["{}3".format(letter)].fill = green_fill
+			front_ws["{}4".format(letter)].fill = green_fill
+		if i in chain(range(5, 3 + 6 * num_vers, 6), range(6, 3 + 6 * num_vers, 6)):
+			front_ws["{}3".format(letter)].fill = red_fill
+			front_ws["{}4".format(letter)].fill = red_fill
+		if i in chain(range(7, 3 + 6 * num_vers, 6), range(8, 3 + 6 * num_vers, 6)):
+			front_ws["{}3".format(letter)].fill = blue_fill
+			front_ws["{}4".format(letter)].fill = blue_fill
+		if i == 1 or i in range(3, 3 + 6 * num_vers):
+			front_ws.column_dimensions[letter].width = 10
+		elif i == 2:
+			front_ws.column_dimensions[letter].width = 40
+		else:
+			front_ws.column_dimensions[letter].width = 70
+			for j in range(5, front_ws.max_row+1):
+				front_ws["{}{}".format(letter,j)].font = small_font
+				front_ws["{}{}".format(letter,j)].alignment = Alignment(wrapText=True)
+		for j in range(1, front_ws.max_row+1):
+			front_ws["{}{}".format(letter,j)].border = black_border
+
+	for j in range(5, front_ws.max_row+1):
+		front_ws.row_dimensions[j].height = 30
+	front_ws["A1"].alignment = Alignment(horizontal="center", vertical="center", wrapText=True)
+
+def plot_graph(front_ws):
+	VMS_mean_chart = BarChart3D()
+	IPC_mean_chart = BarChart3D()
+	MKB_mean_chart = BarChart3D()
+	VMS_stdev_chart = BarChart3D()
+	IPC_stdev_chart = BarChart3D()
+	MKB_stdev_chart = BarChart3D()
+
+	num_vers = len(apr_versions)
+	for i in range(num_vers):
+		VMS_start_column = 3 + i * 6
+		values = Reference(front_ws, min_col=VMS_start_column, min_row=5, max_col=VMS_start_column, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		VMS_mean_chart.append(series)
+
+		IPC_start_column = 4 + i * 6
+		values = Reference(front_ws, min_col=IPC_start_column, min_row=5, max_col=IPC_start_column, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		IPC_mean_chart.append(series)
+
+		MKB_start_column = 5 + i * 6
+		values = Reference(front_ws, min_col=MKB_start_column, min_row=5, max_col=MKB_start_column, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		MKB_mean_chart.append(series)
+
+	x_axis = Reference(front_ws, min_col=2, min_row=5, max_col=2, max_row=front_ws.max_row)
+	y_axis = 'Time(Secs)'
+	
+	title = " :: " + " vs ".join(apr_versions) + " - Uptime 1 hour"
+
+	VMS_mean_chart.set_categories(x_axis)
+	VMS_mean_chart.y_axis.title = y_axis
+	VMS_mean_chart.title = "VMS - Mean" + title
+	VMS_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
+	VMS_mean_chart.height = 12
+	front_ws.add_chart(VMS_mean_chart, "B{}".format(front_ws.max_row + 3))
+
+	IPC_mean_chart.set_categories(x_axis)
+	IPC_mean_chart.y_axis.title = y_axis
+	IPC_mean_chart.title = "IPC - Mean" + title
+	IPC_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
+	IPC_mean_chart.height = 12
+	front_ws.add_chart(IPC_mean_chart, "B{}".format(front_ws.max_row + 33))
+
+	MKB_mean_chart.set_categories(x_axis)
+	MKB_mean_chart.y_axis.title = y_axis
+	MKB_mean_chart.title = "Mockingbird - Mean" + title
+	MKB_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
+	MKB_mean_chart.height = 12
+	front_ws.add_chart(MKB_mean_chart, "B{}".format(front_ws.max_row + 63))
+
+def write_front_page(front_ws, data_ws):
+	write_header_FP(front_ws)
+	write_front_page_data(front_ws, data_ws)
+	format_FP(front_ws)
+	plot_graph(front_ws)
+
 ############################### front page functions ################################
 
 ################################### main function ###################################
