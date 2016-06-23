@@ -6,7 +6,7 @@ from openpyxl.chart.layout import Layout, ManualLayout
 import csv
 import os, fnmatch
 from collections import Counter
-from statistics import mean
+from Lib.statistics import mean
 from itertools import chain, count, product, islice
 from string import ascii_uppercase
 
