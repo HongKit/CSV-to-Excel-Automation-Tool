@@ -1,0 +1,4 @@
+Precondition: input channel #600, press OK
+1.Press Ch+  - Trigger the timer
+2.Wait until picture and audio present - Stop the timer
+3.Repeat step# 1-2, 9 more times.

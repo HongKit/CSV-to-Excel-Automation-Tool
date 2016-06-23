@@ -1,0 +1,2 @@
+1.Press Menu button  - Trigger the timer
+2.Wait until the Menu UI has been rendered completely  - Stop the timer

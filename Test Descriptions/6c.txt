@@ -1,0 +1,2 @@
+1.Press On Demand button on remote and start the timer 
+2.Stop the timer when On Demand landing page finishes loading.

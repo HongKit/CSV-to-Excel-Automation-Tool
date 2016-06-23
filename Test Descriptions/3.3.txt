@@ -1,0 +1,2 @@
+1.Press DVR button  - Trigger the timer
+2.Wait until the DVR UI has been rendered completely  - Stop the timer

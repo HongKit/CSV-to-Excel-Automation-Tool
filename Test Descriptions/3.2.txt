@@ -1,0 +1,2 @@
+1.Press Info button on a live channel - Trigger the timer
+2.Wait until the flipper UI has been rendered completely and video starts moving - Stop the timer

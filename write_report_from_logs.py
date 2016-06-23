@@ -1,7 +1,3 @@
-""" Assumptions """
-""" No new/depricated tests between different versions """
-""" Will be fixed in later versions"""
-
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Alignment, Font, Border, Side
 from openpyxl.cell import get_column_letter
@@ -11,23 +7,30 @@ import csv
 import os, fnmatch
 from collections import Counter
 from statistics import mean
-from itertools import chain
+from itertools import chain, count, product, islice
+from string import ascii_uppercase
 
 ##################### variables to tune based on future changes #####################
-# apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55", "TESTING", "TESTING2"]
-apr_versions = ["VMS 4.0-8.05.05", "TESTING", "TESTING2"]
-# apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
-latest_version = apr_versions[0]
-
-### specify slots for different clients here
-VMS_slots = [1,3,6,9,11,13,15]
-IPC_slots = [2,4,10,12,14,16]
-MKB_slots = [6,7,8] # mockingbird
-# VMS_slots = [1]
-# IPC_slots = [2]
-# MKB_slots = [7] # mockingbird
-
-slot_numbers = IPC_slots + VMS_slots + MKB_slots
+def read_metadata(filename):
+	with open(filename, newline='') as csvfile:
+		spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+		return next(spamreader)
+try:
+	VMS_slots = read_metadata("Metadata/VMS_slots.csv")
+except OSError as err:
+	VMS_slots = [1,3,6,9,11,13,15]
+try:
+	IPC_slots = read_metadata("Metadata/IPC_slots.csv")
+except OSError as err:
+	IPC_slots = [2,4,10,12,14,16]
+try:
+	MKB_slots = read_metadata("Metadata/MKB_slots.csv")
+except OSError as err:
+	MKB_slots = [6,7,8] # mockingbird
+try:
+	apr_versions = read_metadata("Metadata/Version_names.csv")
+except OSError as err:
+	apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
 ##################### variables to tune based on future changes #####################
 
 ###################################### styles #######################################
@@ -71,8 +74,9 @@ def see_counters(VMS_records, IPC_records, MKB_records, maximums):
 ################################## test functions ###################################
 
 ############################### data sheet functions ################################
-from itertools import count, product, islice
-from string import ascii_uppercase
+latest_version = apr_versions[0]
+slot_numbers = IPC_slots + VMS_slots + MKB_slots
+
 def multiletters(seq, start):
 	found = False
 	for n in count(1):
@@ -301,9 +305,12 @@ def write_header_FP(ws):
 	    ws.append(row)
 
 def read_from_des_txt(tc):
-	f = open('Test Descriptions/{}.txt'.format(tc), 'r')
-	result = f.read()
-	f.close()
+	try:
+		f = open('Test Descriptions/{}.txt'.format(tc), 'r')
+		result = f.read()
+		f.close()
+	except OSError:
+		result = "No description specified"
 	return result
 
 def write_front_page_data(front_ws, data_ws, maximums):

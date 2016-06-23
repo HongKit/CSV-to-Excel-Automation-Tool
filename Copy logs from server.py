@@ -4,6 +4,11 @@ import shutil
 import sys
 import win32wnet
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Grab log files from production server and store it under logs folder')
+parser.add_argument('APR_Version', nargs='+', help='The APR version that correspond to the log data')
+
 def netcopy(host, source, dest_dir, username=None, password=None, move=False):
     """ Copies files or directories to a remote computer. """
     wnet_connect(host, username, password)
@@ -40,7 +45,11 @@ def wnet_connect(host, username, password):
         raise err
 
 if __name__ == '__main__':
-    for i in range(1, 17):
-        netcopy('10.77.177.210', 'C:/performance_Logs - Copy/logs{}.csv'.format(i), \
-            'E:/Users/Krishna.M/Downloads/Automation tool/raw logs from server', \
-            username="StormTestUser", password="user_pwd", move=False)
+    try:
+        folder_name = sys.argv[1]
+        for i in range(1, 17):
+            netcopy('10.77.177.210', 'C:/performance_Logs - Copy/logs{}.csv'.format(i), \
+                'logs/{}'.format(folder_name), username="StormTestUser", password="user_pwd", move=False)
+        print("\n\nCopy Successful!!!\n")
+    except IndexError:
+        parser.print_help()

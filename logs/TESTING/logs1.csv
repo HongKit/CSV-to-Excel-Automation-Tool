@@ -1,0 +1,303 @@
+3.1a,Menu Launch Time,0.9324,PASS,6/7/2016 16:32
+3.1,Menu Launch Time,3.8961,PASS,6/7/2016 16:39
+3.1,Menu Launch Time,1.2987,PASS,6/7/2016 16:45
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0,FAIL,6/7/2016 17:47
+4a,VOD Launch Time,6.9597,PASS,6/7/2016 19:33
+3.1a,Menu Launch Time,0.999,PASS,6/7/2016 19:39
+3.1,Menu Launch Time,1.2654,PASS,6/7/2016 19:43
+3.1,Menu Launch Time,1.2321,PASS,6/7/2016 19:46
+3.1,Menu Launch Time,1.7649,PASS,6/7/2016 19:55
+3.1a,Menu Launch Time,0.7992,PASS,6/13/2016 17:05
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,1.2654,PASS,6/13/2016 17:07
+3.3,Info Launch,0.5994,PASS,6/13/2016 17:08
+3.4,DVR Launch,0.999,PASS,6/13/2016 17:10
+4a,VOD Launch Time,0,FAIL,6/13/2016 17:21
+4b,VOD Launch Without Barker CH Display Time,4.6953,PASS,6/13/2016 17:27
+4a,VOD Launch Time,0,FAIL,6/14/2016 15:44
+2.1,HD To HD Channel Change,2.3643,PASS,6/17/2016 14:54
+1b,Measure Ten Channel Change Time,28.5714,PASS,6/21/2016 1:10
+1b,Measure Ten Channel Change Time,25.6743,PASS,6/21/2016 3:08
+1b,Measure Ten Channel Change Time,26.64,PASS,6/21/2016 5:05
+1b,Measure Ten Channel Change Time,32.0679,PASS,6/21/2016 7:25
+1b,Measure Ten Channel Change Time,28.5381,PASS,6/21/2016 9:36
+1b,Measure Ten Channel Change Time,25.9407,FAIL,6/21/2016 12:15
+1b,Measure Ten Channel Change Time,20.313,PASS,6/21/2016 16:59
+1b,Measure Ten Channel Change Time,31.3353,PASS,6/21/2016 18:29
+1b,Measure Ten Channel Change Time,25.7076,PASS,6/21/2016 20:06
+3.1a,Menu Launch Time,0.5328,PASS,6/21/2016 22:21
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.9324,PASS,6/21/2016 22:23
+3.3,Info Launch,0.1998,PASS,6/21/2016 22:24
+3.4,DVR Launch,0.4329,FAIL,6/21/2016 22:35
+4b,VOD Launch Without Barker CH Display Time,5.2281,PASS,6/21/2016 22:46
+3.1a,Menu Launch Time,0.5328,PASS,6/21/2016 22:47
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/21/2016 22:49
+3.3,Info Launch,0.2664,PASS,6/21/2016 22:51
+3.4,DVR Launch,0.4329,FAIL,6/21/2016 23:02
+4b,VOD Launch Without Barker CH Display Time,3.1635,PASS,6/21/2016 23:09
+3.1a,Menu Launch Time,0.4995,PASS,6/21/2016 23:10
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7992,PASS,6/21/2016 23:12
+3.3,Info Launch,0.2664,PASS,6/21/2016 23:14
+3.4,DVR Launch,0.0333,FAIL,6/21/2016 23:25
+4b,VOD Launch Without Barker CH Display Time,2.331,PASS,6/21/2016 23:30
+3.1a,Menu Launch Time,0.5661,PASS,6/21/2016 23:32
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/21/2016 23:34
+3.3,Info Launch,0.6327,PASS,6/21/2016 23:36
+3.4,DVR Launch,0.4329,FAIL,6/21/2016 23:47
+4b,VOD Launch Without Barker CH Display Time,2.4309,PASS,6/21/2016 23:52
+3.1a,Menu Launch Time,0.6327,PASS,6/21/2016 23:53
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7992,PASS,6/21/2016 23:56
+3.3,Info Launch,0.2331,PASS,6/21/2016 23:57
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 0:08
+4b,VOD Launch Without Barker CH Display Time,2.0646,PASS,6/22/2016 0:12
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 0:14
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 0:16
+3.3,Info Launch,0.1998,PASS,6/22/2016 0:18
+3.4,DVR Launch,0.333,FAIL,6/22/2016 0:29
+4b,VOD Launch Without Barker CH Display Time,2.2977,PASS,6/22/2016 0:34
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 0:36
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 0:38
+3.3,Info Launch,0.2664,PASS,6/22/2016 0:40
+3.4,DVR Launch,0.3996,FAIL,6/22/2016 0:51
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 0:56
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 0:57
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 0:59
+3.3,Info Launch,0.1998,PASS,6/22/2016 1:01
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 1:12
+4b,VOD Launch Without Barker CH Display Time,3.1635,PASS,6/22/2016 1:18
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 1:20
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 1:22
+3.3,Info Launch,0.2331,PASS,6/22/2016 1:24
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 1:35
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 1:40
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 1:42
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 1:44
+3.3,Info Launch,0.1998,PASS,6/22/2016 1:45
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 1:56
+4b,VOD Launch Without Barker CH Display Time,4.9284,PASS,6/22/2016 2:05
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 2:07
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 2:09
+3.3,Info Launch,0.0333,PASS,6/22/2016 2:10
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 2:21
+4b,VOD Launch Without Barker CH Display Time,2.2311,PASS,6/22/2016 2:26
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 2:28
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 2:30
+3.3,Info Launch,0.2331,PASS,6/22/2016 2:32
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 2:43
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 2:48
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 2:50
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.5994,PASS,6/22/2016 2:52
+3.3,Info Launch,0.2331,PASS,6/22/2016 2:53
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 3:04
+4b,VOD Launch Without Barker CH Display Time,2.1645,PASS,6/22/2016 3:09
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 3:11
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 3:13
+3.3,Info Launch,0.2331,PASS,6/22/2016 3:14
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 3:25
+4b,VOD Launch Without Barker CH Display Time,2.0646,PASS,6/22/2016 3:30
+3.1a,Menu Launch Time,0.4995,PASS,6/22/2016 3:32
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 3:34
+3.3,Info Launch,0.2664,PASS,6/22/2016 3:35
+3.4,DVR Launch,0.3996,FAIL,6/22/2016 3:47
+4b,VOD Launch Without Barker CH Display Time,2.1645,PASS,6/22/2016 3:51
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 3:53
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 3:55
+3.3,Info Launch,0.2664,PASS,6/22/2016 3:56
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 4:08
+4b,VOD Launch Without Barker CH Display Time,2.8971,PASS,6/22/2016 4:15
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 4:17
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0,FAIL,6/22/2016 4:29
+3.3,Info Launch,0.2331,PASS,6/22/2016 4:30
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 4:42
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 4:47
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 4:49
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0,FAIL,6/22/2016 5:01
+3.3,Info Launch,0.2331,PASS,6/22/2016 5:02
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 5:14
+4b,VOD Launch Without Barker CH Display Time,2.1312,PASS,6/22/2016 5:19
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 5:20
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 5:23
+3.3,Info Launch,0.2664,PASS,6/22/2016 5:24
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 5:35
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 5:40
+3.1a,Menu Launch Time,0.4995,PASS,6/22/2016 5:42
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 5:44
+3.3,Info Launch,0.2331,PASS,6/22/2016 5:45
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 5:56
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 6:01
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 6:02
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 6:05
+3.3,Info Launch,0.1998,PASS,6/22/2016 6:06
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 6:17
+4b,VOD Launch Without Barker CH Display Time,3.2634,PASS,6/22/2016 6:23
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 6:25
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 6:27
+3.3,Info Launch,0.1998,PASS,6/22/2016 6:29
+3.4,DVR Launch,0.3996,FAIL,6/22/2016 6:39
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 6:44
+3.1a,Menu Launch Time,0.4995,PASS,6/22/2016 6:46
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 6:48
+3.3,Info Launch,0.2331,PASS,6/22/2016 6:49
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 7:01
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 7:06
+3.1a,Menu Launch Time,0.4995,PASS,6/22/2016 7:07
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 7:09
+3.3,Info Launch,0.2331,PASS,6/22/2016 7:11
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 7:22
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 7:27
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 7:29
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 7:31
+3.3,Info Launch,0.1332,PASS,6/22/2016 7:32
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 7:43
+4b,VOD Launch Without Barker CH Display Time,2.2977,PASS,6/22/2016 7:48
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 7:50
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 7:53
+3.3,Info Launch,0.1665,PASS,6/22/2016 7:54
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 8:05
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 8:10
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 8:12
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 8:14
+3.3,Info Launch,0.2331,PASS,6/22/2016 8:15
+3.4,DVR Launch,0.1665,FAIL,6/22/2016 8:27
+4b,VOD Launch Without Barker CH Display Time,2.1645,PASS,6/22/2016 8:31
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 8:33
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 8:35
+3.3,Info Launch,0.2331,PASS,6/22/2016 8:36
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 8:48
+4b,VOD Launch Without Barker CH Display Time,2.8638,PASS,6/22/2016 8:53
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 8:55
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 8:57
+3.3,Info Launch,0.2331,PASS,6/22/2016 8:58
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 9:08
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 9:13
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 9:14
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 9:16
+3.3,Info Launch,0.2664,PASS,6/22/2016 9:18
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 9:26
+4b,VOD Launch Without Barker CH Display Time,2.2311,PASS,6/22/2016 9:30
+3.1a,Menu Launch Time,0.4995,PASS,6/22/2016 9:32
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 9:34
+3.3,Info Launch,0.2331,PASS,6/22/2016 9:35
+3.4,DVR Launch,0.3663,FAIL,6/22/2016 9:43
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 9:47
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 9:48
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.666,PASS,6/22/2016 9:50
+3.3,Info Launch,0.2331,PASS,6/22/2016 9:51
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 10:01
+4b,VOD Launch Without Barker CH Display Time,2.331,PASS,6/22/2016 10:05
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 10:06
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 10:07
+3.3,Info Launch,0.2664,PASS,6/22/2016 10:08
+3.4,DVR Launch,0.4995,FAIL,6/22/2016 10:18
+4b,VOD Launch Without Barker CH Display Time,2.5641,PASS,6/22/2016 10:21
+3.1a,Menu Launch Time,0.5328,PASS,6/22/2016 10:22
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 10:23
+3.3,Info Launch,0.2664,PASS,6/22/2016 10:24
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 10:33
+4b,VOD Launch Without Barker CH Display Time,2.2977,PASS,6/22/2016 10:36
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 10:37
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 10:38
+3.3,Info Launch,0.2664,PASS,6/22/2016 10:40
+3.4,DVR Launch,0.3996,FAIL,6/22/2016 10:46
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 10:49
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 10:51
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.666,PASS,6/22/2016 10:52
+3.3,Info Launch,0.2664,PASS,6/22/2016 10:54
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 11:00
+4b,VOD Launch Without Barker CH Display Time,5.9274,PASS,6/22/2016 11:07
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 11:08
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 11:09
+3.3,Info Launch,0.3663,PASS,6/22/2016 11:11
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 11:18
+4b,VOD Launch Without Barker CH Display Time,2.1978,PASS,6/22/2016 11:22
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 11:23
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 11:25
+3.3,Info Launch,0.2331,PASS,6/22/2016 11:26
+3.4,DVR Launch,0,FAIL,6/22/2016 11:32
+4b,VOD Launch Without Barker CH Display Time,2.1312,PASS,6/22/2016 11:36
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 11:37
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.4662,PASS,6/22/2016 11:38
+3.3,Info Launch,0.2331,PASS,6/22/2016 11:40
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 11:45
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 11:48
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 11:49
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 11:50
+3.3,Info Launch,0.2331,PASS,6/22/2016 11:52
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 11:59
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 12:02
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 12:03
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 12:05
+3.3,Info Launch,0.2331,PASS,6/22/2016 12:06
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 12:13
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 12:17
+3.1a,Menu Launch Time,0.6327,PASS,6/22/2016 12:18
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7326,PASS,6/22/2016 12:20
+3.3,Info Launch,0.2331,PASS,6/22/2016 12:21
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 12:27
+4b,VOD Launch Without Barker CH Display Time,2.2311,PASS,6/22/2016 12:30
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 12:31
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.6993,PASS,6/22/2016 12:32
+3.3,Info Launch,0.2664,PASS,6/22/2016 12:33
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 12:40
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 12:43
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 12:44
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 12:46
+3.3,Info Launch,0.2664,PASS,6/22/2016 12:47
+3.4,DVR Launch,0.4662,FAIL,6/22/2016 12:53
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 12:57
+3.1a,Menu Launch Time,0.9324,PASS,6/22/2016 12:58
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 13:00
+3.3,Info Launch,0.5328,PASS,6/22/2016 13:01
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 13:07
+4b,VOD Launch Without Barker CH Display Time,2.1645,PASS,6/22/2016 13:10
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 13:11
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 13:14
+3.3,Info Launch,0.2664,PASS,6/22/2016 13:15
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 13:29
+4b,VOD Launch Without Barker CH Display Time,2.2977,PASS,6/22/2016 13:34
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 13:36
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 13:38
+3.3,Info Launch,0.1998,PASS,6/22/2016 13:40
+3.4,DVR Launch,0.3663,FAIL,6/22/2016 13:54
+4b,VOD Launch Without Barker CH Display Time,2.331,PASS,6/22/2016 14:00
+3.1a,Menu Launch Time,0.5661,PASS,6/22/2016 14:02
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.333,PASS,6/22/2016 14:03
+3.3,Info Launch,0.2331,PASS,6/22/2016 14:05
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 14:18
+4b,VOD Launch Without Barker CH Display Time,2.2977,PASS,6/22/2016 14:24
+3.1a,Menu Launch Time,0.6327,PASS,6/22/2016 14:26
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 14:28
+3.3,Info Launch,0.2664,PASS,6/22/2016 14:29
+3.4,DVR Launch,0.4329,FAIL,6/22/2016 14:46
+4b,VOD Launch Without Barker CH Display Time,2.2644,PASS,6/22/2016 14:52
+3.1a,Menu Launch Time,0.5994,PASS,6/22/2016 14:54
+3.2a,GuideLaunchTimeMsrmentWithoutPIP,0.7659,PASS,6/22/2016 14:57
+3.3,Info Launch,0.2331,PASS,6/22/2016 14:58
+3.4,DVR Launch,0.3663,FAIL,6/22/2016 15:09
+4b,VOD Launch Without Barker CH Display Time,2.331,PASS,6/22/2016 15:14
+1b,Measure Ten Channel Change Time,36.3636,PASS,6/22/2016 23:11
+1b,Measure Ten Channel Change Time,27.8721,PASS,6/23/2016 0:40
+1b,Measure Ten Channel Change Time,28.5048,PASS,6/23/2016 1:37
+1b,Measure Ten Channel Change Time,33.0669,PASS,6/23/2016 3:02
+1b,Measure Ten Channel Change Time,32.1678,PASS,6/23/2016 4:40
+1b,Measure Ten Channel Change Time,26.7732,FAIL,6/23/2016 6:48
+1b,Measure Ten Channel Change Time,30.2031,PASS,6/23/2016 8:21
+1b,Measure Ten Channel Change Time,28.1718,FAIL,6/23/2016 10:35
+1b,Measure Ten Channel Change Time,36.0306,PASS,6/23/2016 12:49
+1b,Measure Ten Channel Change Time,28.0386,PASS,6/23/2016 14:24
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
