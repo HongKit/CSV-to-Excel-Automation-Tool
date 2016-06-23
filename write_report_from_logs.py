@@ -14,14 +14,18 @@ from statistics import mean
 from itertools import chain
 
 ##################### variables to tune based on future changes #####################
+# apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55", "TESTING", "TESTING2"]
+apr_versions = ["VMS 4.0-8.05.05", "TESTING", "TESTING2"]
 # apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
-apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55", "TESTING", "TESTING2"]
 latest_version = apr_versions[0]
 
 ### specify slots for different clients here
-IPC_slots = [5]
-VMS_slots = [6]
-MKB_slots = [7] # mockingbird
+VMS_slots = [1,3,6,9,11,13,15]
+IPC_slots = [2,4,10,12,14,16]
+MKB_slots = [6,7,8] # mockingbird
+# VMS_slots = [1]
+# IPC_slots = [2]
+# MKB_slots = [7] # mockingbird
 
 slot_numbers = IPC_slots + VMS_slots + MKB_slots
 ##################### variables to tune based on future changes #####################
@@ -43,6 +47,28 @@ small_font			= Font(size=8)
 black_side  		= Side(border_style='thin', color='FF000000')
 black_border		= Border(left=black_side, right=black_side, top=black_side, bottom=black_side)
 ###################################### styles #######################################
+
+################################## test functions ###################################
+def see_counters(VMS_records, IPC_records, MKB_records, maximums):
+	counters1, counters2, counters3 = [],[],[]
+	for apr_version in apr_versions:
+		r1 = VMS_records[apr_version]
+		r2 = IPC_records[apr_version]
+		r3 = MKB_records[apr_version]
+		counters1.append(Counter([record[0] for record in r1]))
+		counters2.append(Counter([record[0] for record in r2]))
+		counters3.append(Counter([record[0] for record in r3]))
+	for i in range(len(apr_versions)):
+		print(counters1[i])
+	print()
+	for i in range(len(apr_versions)):
+		print(counters2[i])
+	print()
+	for i in range(len(apr_versions)):
+		print(counters3[i])
+	print()
+	print(maximums)
+################################## test functions ###################################
 
 ############################### data sheet functions ################################
 from itertools import count, product, islice
@@ -71,7 +97,7 @@ def read_csv(apr_version, slot_number, log_file_directories):
 		with open(log_file_name, newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
-				if row[3] == "PASS":
+				if len(row) != 0 and row[3] == "PASS":
 					row[2] = float(row[2])
 					log_file_contents.append(row)
 		return log_file_contents
@@ -97,30 +123,62 @@ def collect_from_csv(log_file_directories):
 
 def pad(records, tc, tc_name, num_to_pad):
 	selected_records = [record for record in records if record[0] == tc]
-	avg = mean([float(selected_record[2]) for selected_record in selected_records])
-	pad_record = [tc, tc_name, str(avg), "PADDED_DATA", "PADDED_DATA"]
+	if len(selected_records) != 0:
+		avg = mean([float(selected_record[2]) for selected_record in selected_records])
+	else: 
+		avg = 0.0
+	pad_record = [tc, tc_name, float(avg), "PADDED_DATA", "PADDED_DATA"]
 	return records + num_to_pad * [pad_record]
 
 
-def check_and_pad(IPC_records, VMS_records, MKB_records):
+def check_and_pad(VMS_records, IPC_records, MKB_records):
+	# Find all the test case names
+	all_test_cases = set()
 	for apr_version in apr_versions:
-		r1 = IPC_records[apr_version]
-		r2 = VMS_records[apr_version]
+		for record in VMS_records[apr_version]:
+			all_test_cases.update([(record[0], record[1])])
+		for record in IPC_records[apr_version]:
+			all_test_cases.update([(record[0], record[1])])
+		for record in MKB_records[apr_version]:
+			all_test_cases.update([(record[0], record[1])])
+	all_test_cases = sorted(list(all_test_cases), key=lambda elem: elem[0])
+
+	# Counters for later use
+	VMS_counters = []
+	IPC_counters = []
+	MKB_counters = []
+	for apr_version in apr_versions:
+		r1 = VMS_records[apr_version]
+		r2 = IPC_records[apr_version]
 		r3 = MKB_records[apr_version]
-		counter1 = Counter([(elem[0], elem[1]) for elem in r1])
-		counter2 = Counter([(elem[0], elem[1]) for elem in r2])
-		counter3 = Counter([(elem[0], elem[1]) for elem in r3])
-		for tc, tc_name in counter1:
-			if counter1[(tc, tc_name)] > counter2[(tc, tc_name)] and counter1[(tc, tc_name)] > counter3[(tc, tc_name)]:
-				VMS_records[apr_version] = pad(VMS_records[apr_version], tc, tc_name, counter1[(tc, tc_name)] - counter2[(tc, tc_name)])
-				MKB_records[apr_version] = pad(MKB_records[apr_version], tc, tc_name, counter1[(tc, tc_name)] - counter3[(tc, tc_name)])
-			elif counter2[(tc, tc_name)] > counter1[(tc, tc_name)] and counter2[(tc, tc_name)] > counter3[(tc, tc_name)]:
-				IPC_records[apr_version] = pad(IPC_records[apr_version], tc, tc_name, counter2[(tc, tc_name)] - counter1[(tc, tc_name)])
-				MKB_records[apr_version] = pad(MKB_records[apr_version], tc, tc_name, counter2[(tc, tc_name)] - counter3[(tc, tc_name)])
-			elif counter3[(tc, tc_name)] > counter1[(tc, tc_name)] and counter3[(tc, tc_name)] > counter2[(tc, tc_name)]:
-				IPC_records[apr_version] = pad(IPC_records[apr_version], tc, tc_name, counter3[(tc, tc_name)] - counter1[(tc, tc_name)])
-				VMS_records[apr_version] = pad(VMS_records[apr_version], tc, tc_name, counter3[(tc, tc_name)] - counter2[(tc, tc_name)])
-	return IPC_records, VMS_records, MKB_records
+		VMS_counters.append(Counter([(elem[0], elem[1]) for elem in r1]))
+		IPC_counters.append(Counter([(elem[0], elem[1]) for elem in r2]))
+		MKB_counters.append(Counter([(elem[0], elem[1]) for elem in r3]))
+
+	# find the max number of records for that tc across machines and Versions for each test cases
+	maximums = {(tc, tc_name): 0 for tc, tc_name in all_test_cases}
+	for tc, tc_name in all_test_cases:
+		for apr_version in apr_versions:
+			for counter in VMS_counters:
+				maximums[(tc, tc_name)] = max(maximums[(tc, tc_name)], counter[(tc, tc_name)])
+			for counter in IPC_counters:
+				maximums[(tc, tc_name)] = max(maximums[(tc, tc_name)], counter[(tc, tc_name)])
+			for counter in MKB_counters:
+				maximums[(tc, tc_name)] = max(maximums[(tc, tc_name)], counter[(tc, tc_name)])
+	
+	# Padding happens here
+	# for each test case name
+	for tc, tc_name in all_test_cases:
+		# for each apr_version
+		for i, apr_version in enumerate(apr_versions):
+			# for each machine, pad the records to max number
+			num_to_pad = maximums[(tc, tc_name)] - VMS_counters[i][(tc, tc_name)]
+			VMS_records[apr_version] = pad(VMS_records[apr_version], tc, tc_name, num_to_pad)
+			num_to_pad = maximums[(tc, tc_name)] - IPC_counters[i][(tc, tc_name)]
+			IPC_records[apr_version] = pad(IPC_records[apr_version], tc, tc_name, num_to_pad)
+			num_to_pad = maximums[(tc, tc_name)] - MKB_counters[i][(tc, tc_name)]
+			MKB_records[apr_version] = pad(MKB_records[apr_version], tc, tc_name, num_to_pad)	
+	return IPC_records, VMS_records, MKB_records, maximums
 
 def write_header(ws, column_num):
 	for ver_count, apr_version in enumerate(apr_versions):
@@ -135,6 +193,8 @@ def write_test_data(ws, column_num, records, num_records):
 	for i in range(num_records):
 		for ver_count, apr_version in enumerate(apr_versions):
 			ws.cell(row = i+2, column = column_num + ver_count).value = records[apr_version][i][2]
+
+			# ws.cell(row = i+2, column = column_num + ver_count).value = records[apr_version][i][2]
 			if ver_count != 0:
 				column1 = column_num_to_letter(column_num + ver_count)
 				column2 = column_num_to_letter(column_num)
@@ -164,7 +224,6 @@ def write_contents(ws, IPC_records, VMS_records, MKB_records):
 		ws["{}{}".format("A", i+2)] = VMS_records[first_key][i][0]
 		ws["{}{}".format("B", i+2)] = VMS_records[first_key][i][1]
 
-	### Write the test data
 	write_test_data(ws, column_VMS, VMS_records, num_records)
 	write_test_data(ws, column_IPC, IPC_records, num_records)
 	write_test_data(ws, column_MKB, MKB_records, num_records)
@@ -242,22 +301,23 @@ def write_header_FP(ws):
 	    ws.append(row)
 
 def read_from_des_txt(tc):
-	f = open('Input/{}.txt'.format(tc), 'r')
+	f = open('Test Descriptions/{}.txt'.format(tc), 'r')
 	result = f.read()
 	f.close()
 	return result
 
-def write_front_page_data(front_ws, data_ws):
+def write_front_page_data(front_ws, data_ws, maximums):
 	test_head_row_numbers = []
 	tc_s = []
 	tc_names = []
-	for i in range(2, data_ws.max_row+1):
-		if i == 2 or i == data_ws.max_row\
-		or data_ws["A{}".format(i)].value != data_ws["A{}".format(i-1)].value:
-			tc_s.append(data_ws["A{}".format(i)].value)
-			tc_names.append(data_ws["B{}".format(i)].value)
-			test_head_row_numbers.append(i)
-	
+	cumulative_row_number = 2
+	for item in sorted(maximums):
+		tc_s.append(item[0])
+		tc_names.append(item[1])
+		test_head_row_numbers.append(cumulative_row_number)
+		cumulative_row_number += maximums[item]
+	test_head_row_numbers.append(cumulative_row_number)
+
 	num_vers = len(apr_versions)
 	chars = char_range("C", 3 * 3 * num_vers)
 	red_zone_width = num_vers + 2 * (num_vers-1)
@@ -382,25 +442,28 @@ def plot_graph(front_ws):
 	add_chart_to_FP(front_ws, IPC_stdev_chart, x_axis, y_axis, "IPC - stdev" + title, 4)
 	add_chart_to_FP(front_ws, MKB_stdev_chart, x_axis, y_axis, "MKB - stdev" + title, 5)
 
-def write_front_page(front_ws, data_ws):
+def write_front_page(front_ws, data_ws, maximums):
 	write_header_FP(front_ws)
-	write_front_page_data(front_ws, data_ws)
+	write_front_page_data(front_ws, data_ws, maximums)
 	format_FP(front_ws)
 	plot_graph(front_ws)
-
 ############################### front page functions ################################
 
 ################################### main function ###################################
 def write_report():
 	# extract records from log files
 	IPC_records, VMS_records, MKB_records = collect_from_csv("logs")
+
+	# Check data and pad if necessary
+	VMS_records, IPC_records, MKB_records, maximums = check_and_pad(VMS_records, IPC_records, MKB_records)
+
+	# see_counters(VMS_records, IPC_records, MKB_records, maximums)
+
 	# sort each list in each dict by the first column
 	for apr_version in apr_versions:
 		IPC_records[apr_version] = sorted(IPC_records[apr_version], key=lambda elem: elem[0])
 		VMS_records[apr_version] = sorted(VMS_records[apr_version], key=lambda elem: elem[0])
 		MKB_records[apr_version] = sorted(MKB_records[apr_version], key=lambda elem: elem[0])
-	# Check data and pad if necessary
-	IPC_records, VMS_records, MKB_records = check_and_pad(IPC_records, VMS_records, MKB_records)
 
 	# write to the report file
 	wb = Workbook()
@@ -410,7 +473,7 @@ def write_report():
 
 	################################################################################
 	write_report_data_page(data_ws, IPC_records, VMS_records, MKB_records)
-	write_front_page(front_ws, data_ws)
+	write_front_page(front_ws, data_ws, maximums)
 	################################################################################
 	wb.save('Report Output/output_report.xlsx')
 
