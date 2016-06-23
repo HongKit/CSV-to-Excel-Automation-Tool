@@ -2,21 +2,20 @@
 """ No new/depricated tests between different versions """
 """ Will be fixed in later versions"""
 
-from openpyxl import load_workbook	# for writing the report
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Alignment, Font, Border, Side
 from openpyxl.cell import get_column_letter
 from openpyxl.chart import Reference, Series, BarChart3D
 from openpyxl.chart.layout import Layout, ManualLayout
-import csv 							# for reading from csv log files
-import os, fnmatch					# for finding the filename of the Report file
-from collections import Counter		# for counting number of times a test is run
+import csv
+import os, fnmatch
+from collections import Counter
 from statistics import mean
 from itertools import chain
-from textwrap import fill
 
 ##################### variables to tune based on future changes #####################
-apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
+# apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
+apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55", "TESTING", "TESTING2"]
 latest_version = apr_versions[0]
 
 ### specify slots for different clients here
@@ -60,7 +59,10 @@ def multiletters(seq, start):
 			yield result
 
 def char_range(c1, length):
-    return list(islice(multiletters(ascii_uppercase, c1), length))
+    return list(islice(multiletters(ascii_uppercase, c1), length))\
+
+def column_num_to_letter(column_num):
+	return list(char_range("A", column_num))[-1]
 
 def read_csv(apr_version, slot_number, log_file_directories):
 	try:
@@ -120,37 +122,40 @@ def check_and_pad(IPC_records, VMS_records, MKB_records):
 				VMS_records[apr_version] = pad(VMS_records[apr_version], tc, tc_name, counter3[(tc, tc_name)] - counter2[(tc, tc_name)])
 	return IPC_records, VMS_records, MKB_records
 
-def write_header(ws, ord_mac):
+def write_header(ws, column_num):
 	for ver_count, apr_version in enumerate(apr_versions):
-		ws["{}1".format(chr(ord_mac + ver_count))] = apr_versions[ver_count]
+		ws.cell(row = 1, column = column_num + ver_count).value = apr_versions[ver_count]
 		if ver_count != 0:
-			ws["{}1".format(chr(ord_mac + len(apr_versions) + 2 * ver_count - 2))] = \
+			ws.cell(row = 1, column = column_num + len(apr_versions) + 2 * ver_count - 2).value = \
 				"Difference\n({}-{})".format(apr_versions[ver_count], latest_version)
-			ws["{}1".format(chr(ord_mac + len(apr_versions) + 2 * ver_count - 1))] = \
+			ws.cell(row = 1, column = column_num + len(apr_versions) + 2 * ver_count - 1).value = \
 				"%Change"
 
-def write_test_data(ws, ord_mac, records, num_records):
+def write_test_data(ws, column_num, records, num_records):
 	for i in range(num_records):
 		for ver_count, apr_version in enumerate(apr_versions):
-			ws["{}{}".format(chr(ord_mac + ver_count), i+2)] = records[apr_version][i][2]
+			ws.cell(row = i+2, column = column_num + ver_count).value = records[apr_version][i][2]
 			if ver_count != 0:
-				ws["{}{}".format(chr(ord_mac + len(apr_versions) + 2 * ver_count - 2), i+2)] = \
-					"={0}{2} - {1}{2}".format(chr(ord_mac + ver_count), chr(ord_mac), i + 2)
-				ws["{}{}".format(chr(ord_mac + len(apr_versions) + 2 * ver_count - 1), i+2)] = \
-					"={0}{2}/{1}{2}*100".format(chr(ord_mac + len(apr_versions) + 2 * ver_count - 2), chr(ord_mac), i + 2)
+				column1 = column_num_to_letter(column_num + ver_count)
+				column2 = column_num_to_letter(column_num)
+				column3 = column_num_to_letter(column_num + len(apr_versions) + 2 * ver_count - 2)
+				ws.cell(row = i+2, column = column_num + len(apr_versions) + 2 * ver_count - 2).value = \
+					"={0}{2} - {1}{2}".format(column1, column2, i + 2)
+				ws.cell(row = i+2, column = column_num + len(apr_versions) + 2 * ver_count - 1).value = \
+					"={0}{2}/{1}{2}*100".format(column3, column2, i + 2)
 
 def write_contents(ws, IPC_records, VMS_records, MKB_records):
 	### Find the ASCII number corresponding to the starting column letter
 	red_zone_width = len(apr_versions) + 2 * (len(apr_versions)-1)
-	ord_VMS = ord("C")
-	ord_IPC = ord_VMS + red_zone_width
-	ord_MKB = ord_IPC + red_zone_width
+	column_VMS = 3
+	column_IPC = column_VMS + red_zone_width
+	column_MKB = column_IPC + red_zone_width
 
 	### write the headers for each column
 	ws['A1'], ws['B1'] = "TC", "TC Name"
-	write_header(ws, ord_VMS)
-	write_header(ws, ord_IPC)
-	write_header(ws, ord_MKB)
+	write_header(ws, column_VMS)
+	write_header(ws, column_IPC)
+	write_header(ws, column_MKB)
 
 	### Write the contents of the first 2 columns
 	first_key = list(VMS_records.keys())[0]
@@ -160,35 +165,35 @@ def write_contents(ws, IPC_records, VMS_records, MKB_records):
 		ws["{}{}".format("B", i+2)] = VMS_records[first_key][i][1]
 
 	### Write the test data
-	write_test_data(ws, ord_VMS, VMS_records, num_records)
-	write_test_data(ws, ord_IPC, IPC_records, num_records)
-	write_test_data(ws, ord_MKB, MKB_records, num_records)
+	write_test_data(ws, column_VMS, VMS_records, num_records)
+	write_test_data(ws, column_IPC, IPC_records, num_records)
+	write_test_data(ws, column_MKB, MKB_records, num_records)
 	
-def paint_and_format_data(ws, ord_mac, red_zone_width, paint, i):
-	for letter in char_range(chr(ord_mac), red_zone_width):
+def paint_and_format_data(ws, column_num, red_zone_width, paint, i):
+	for letter in char_range(column_num_to_letter(column_num), red_zone_width):
 		ws['{}{}'.format(letter, i)].fill = paint
 		ws['{}{}'.format(letter, i)].alignment = center_alignment
 		ws['{}{}'.format(letter, i)].number_format = '0.00'
 
 def format_sheet(ws):
 	red_zone_width = len(apr_versions) + 2 * (len(apr_versions)-1)
-	ord_VMS = ord("C")
-	ord_IPC = ord_VMS + red_zone_width
-	ord_MKB = ord_IPC + red_zone_width
+	column_VMS = 3
+	column_IPC = column_VMS + red_zone_width
+	column_MKB = column_IPC + red_zone_width
 
 	for letter in char_range("A", red_zone_width+2):
 		ws['{}1'.format(letter)].fill = green_fill
-	for letter in char_range(chr(ord_IPC), red_zone_width):
+	for letter in char_range(column_num_to_letter(column_IPC), red_zone_width):
 		ws['{}1'.format(letter)].fill = red_fill
-	for letter in char_range(chr(ord_MKB), red_zone_width):
+	for letter in char_range(column_num_to_letter(column_MKB), red_zone_width):
 		ws['{}1'.format(letter)].fill = blue_fill
 	for letter in char_range("A", red_zone_width * 3 + 2):
 		ws.column_dimensions[letter].width = 15
 
 	for i in range(2, ws.max_row+1):
-		paint_and_format_data(ws, ord_VMS, red_zone_width, pale_green_fill, i)
-		paint_and_format_data(ws, ord_IPC, red_zone_width, pale_red_fill, i)
-		paint_and_format_data(ws, ord_MKB, red_zone_width, pale_blue_fill, i)
+		paint_and_format_data(ws, column_VMS, red_zone_width, pale_green_fill, i)
+		paint_and_format_data(ws, column_IPC, red_zone_width, pale_red_fill, i)
+		paint_and_format_data(ws, column_MKB, red_zone_width, pale_blue_fill, i)
 		if i == 2 or ws["A{}".format(i)].value != ws["A{}".format(i-1)].value:
 			ws['A{}'.format(i)].fill = light_blue_fill
 			ws['B{}'.format(i)].fill = light_blue_fill
@@ -211,7 +216,6 @@ def write_report_data_page(ws, IPC_records, VMS_records, MKB_records):
 
 ############################### front page functions ################################
 def write_header_FP(ws):
-	ord_latest = ord("C")
 	ws.merge_cells("A1:A4")
 	ws.merge_cells("B1:B4")
 
@@ -324,6 +328,14 @@ def format_FP(front_ws):
 		front_ws.row_dimensions[j].height = 30
 	front_ws["A1"].alignment = Alignment(horizontal="center", vertical="center", wrapText=True)
 
+def add_chart_to_FP(ws, chart, x_axis, y_axis, title, order):
+	chart.set_categories(x_axis)
+	chart.y_axis.title = y_axis
+	chart.title = title
+	chart.width = 3 * (ws.max_row - 5) + 5
+	chart.height = 16
+	ws.add_chart(chart, "B{}".format(ws.max_row + 3 + 30 * order))
+
 def plot_graph(front_ws):
 	VMS_mean_chart = BarChart3D()
 	IPC_mean_chart = BarChart3D()
@@ -338,42 +350,37 @@ def plot_graph(front_ws):
 		values = Reference(front_ws, min_col=VMS_start_column, min_row=5, max_col=VMS_start_column, max_row=front_ws.max_row)
 		series = Series(values, title=apr_versions[i])
 		VMS_mean_chart.append(series)
+		values = Reference(front_ws, min_col=VMS_start_column + 1, min_row=5, max_col=VMS_start_column + 1, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		VMS_stdev_chart.append(series)
 
-		IPC_start_column = 4 + i * 6
+		IPC_start_column = 5 + i * 6
 		values = Reference(front_ws, min_col=IPC_start_column, min_row=5, max_col=IPC_start_column, max_row=front_ws.max_row)
 		series = Series(values, title=apr_versions[i])
 		IPC_mean_chart.append(series)
+		values = Reference(front_ws, min_col=IPC_start_column + 1, min_row=5, max_col=IPC_start_column + 1, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		IPC_stdev_chart.append(series)
 
-		MKB_start_column = 5 + i * 6
+		MKB_start_column = 7 + i * 6
 		values = Reference(front_ws, min_col=MKB_start_column, min_row=5, max_col=MKB_start_column, max_row=front_ws.max_row)
 		series = Series(values, title=apr_versions[i])
 		MKB_mean_chart.append(series)
+		values = Reference(front_ws, min_col=MKB_start_column + 1, min_row=5, max_col=MKB_start_column + 1, max_row=front_ws.max_row)
+		series = Series(values, title=apr_versions[i])
+		MKB_stdev_chart.append(series)		
 
 	x_axis = Reference(front_ws, min_col=2, min_row=5, max_col=2, max_row=front_ws.max_row)
 	y_axis = 'Time(Secs)'
 	
 	title = " :: " + " vs ".join(apr_versions) + " - Uptime 1 hour"
 
-	VMS_mean_chart.set_categories(x_axis)
-	VMS_mean_chart.y_axis.title = y_axis
-	VMS_mean_chart.title = "VMS - Mean" + title
-	VMS_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
-	VMS_mean_chart.height = 12
-	front_ws.add_chart(VMS_mean_chart, "B{}".format(front_ws.max_row + 3))
-
-	IPC_mean_chart.set_categories(x_axis)
-	IPC_mean_chart.y_axis.title = y_axis
-	IPC_mean_chart.title = "IPC - Mean" + title
-	IPC_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
-	IPC_mean_chart.height = 12
-	front_ws.add_chart(IPC_mean_chart, "B{}".format(front_ws.max_row + 33))
-
-	MKB_mean_chart.set_categories(x_axis)
-	MKB_mean_chart.y_axis.title = y_axis
-	MKB_mean_chart.title = "Mockingbird - Mean" + title
-	MKB_mean_chart.width = 3 * (front_ws.max_row - 5) + 5
-	MKB_mean_chart.height = 12
-	front_ws.add_chart(MKB_mean_chart, "B{}".format(front_ws.max_row + 63))
+	add_chart_to_FP(front_ws, VMS_mean_chart, x_axis, y_axis, "VMS - Mean" + title, 0)
+	add_chart_to_FP(front_ws, IPC_mean_chart, x_axis, y_axis, "IPC - Mean" + title, 1)
+	add_chart_to_FP(front_ws, MKB_mean_chart, x_axis, y_axis, "MKB - Mean" + title, 2)
+	add_chart_to_FP(front_ws, VMS_stdev_chart, x_axis, y_axis, "VMS - stdev" + title, 3)
+	add_chart_to_FP(front_ws, IPC_stdev_chart, x_axis, y_axis, "IPC - stdev" + title, 4)
+	add_chart_to_FP(front_ws, MKB_stdev_chart, x_axis, y_axis, "MKB - stdev" + title, 5)
 
 def write_front_page(front_ws, data_ws):
 	write_header_FP(front_ws)
