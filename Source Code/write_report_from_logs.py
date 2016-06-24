@@ -3,6 +3,7 @@ from openpyxl.styles import PatternFill, Alignment, Font, Border, Side
 from openpyxl.cell import get_column_letter
 from openpyxl.chart import Reference, Series, BarChart3D
 from openpyxl.chart.layout import Layout, ManualLayout
+import sys
 import csv
 import os, fnmatch
 from collections import Counter
@@ -459,11 +460,14 @@ def write_front_page(front_ws, data_ws, maximums):
 ################################### main function ###################################
 def write_report():
 	# extract records from log files
+	print("Data parsing in progress..."); sys.stdout.flush()
+
 	IPC_records, VMS_records, MKB_records = collect_from_csv("logs")
 
 	# Check data and pad if necessary
 	VMS_records, IPC_records, MKB_records, maximums = check_and_pad(VMS_records, IPC_records, MKB_records)
 
+	# testing purpose
 	# see_counters(VMS_records, IPC_records, MKB_records, maximums)
 
 	# sort each list in each dict by the first column
@@ -472,17 +476,21 @@ def write_report():
 		VMS_records[apr_version] = sorted(VMS_records[apr_version], key=lambda elem: elem[0])
 		MKB_records[apr_version] = sorted(MKB_records[apr_version], key=lambda elem: elem[0])
 
+	print("Report generation in progress..."); sys.stdout.flush()
 	# write to the report file
 	wb = Workbook()
 	front_ws = wb.active
 	front_ws.title = "Dashboard"
 	data_ws = wb.create_sheet(title = 'PerformanceDATA')
 
-	################################################################################
 	write_report_data_page(data_ws, IPC_records, VMS_records, MKB_records)
 	write_front_page(front_ws, data_ws, maximums)
-	################################################################################
+	
+	if not os.path.exists("Report Output"):
+		os.makedirs("Report Output")
+
 	wb.save('Report Output/output_report.xlsx')
+	print("Finished!"); sys.stdout.flush()
 
 ################################### main function ###################################
 if __name__ == '__main__':

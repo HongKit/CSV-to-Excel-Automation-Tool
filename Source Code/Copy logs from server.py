@@ -8,6 +8,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Grab log files from production server and store it under logs folder')
 parser.add_argument('APR_Version', nargs='+', help='The APR version that correspond to the log data')
+parser.add_argument('Server_IP', nargs='+', help='The IP address for the server storing log files')
 
 def netcopy(host, source, dest_dir, username=None, password=None, move=False):
     """ Copies files or directories to a remote computer. """
@@ -47,8 +48,9 @@ def wnet_connect(host, username, password):
 if __name__ == '__main__':
     try:
         folder_name = sys.argv[1]
+        server_IP = sys.argv[2]
         for i in range(1, 17):
-            netcopy('10.77.177.210', 'C:/performance_Logs - Copy/logs{}.csv'.format(i), \
+            netcopy(server_IP, 'C:/performance_Logs - Copy/logs{}.csv'.format(i), \
                 'logs/{}'.format(folder_name), username="StormTestUser", password="user_pwd", move=False)
         print("\n\nCopy Successful!!!\n")
     except IndexError:
