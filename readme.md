@@ -1,15 +1,20 @@
 ################ Python automated test report generator ################
 
-Version: 0.2
+Version: 0.3
 By: Hong-Kit Wong
 
 Usage:
 	
 	Generate xlsx report using raw log files from the server
 
-	Output file: Report Output/output_report
+	Output file: Report Output/output_report.xlsx
 
 Please put the following documents in the designated folder:
+	- Metadata/cutoff_length.csv
+
+		- A csv file which the first row contains the cutoff number for each test case
+
+		- Default value: 25
 
 	- Metadata/VMS_slots.csv
 

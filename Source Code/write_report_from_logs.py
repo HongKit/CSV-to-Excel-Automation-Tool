@@ -9,6 +9,8 @@ import os, fnmatch
 from collections import Counter
 from Lib.statistics import mean
 from itertools import chain, count, product, islice
+from datetime import datetime, date, time
+from dateutil import parser
 from string import ascii_uppercase
 
 ##################### variables to tune based on future changes #####################
@@ -53,6 +55,12 @@ except OSError as err:
 		"VMS-APR3.02-6.33.5": [13,14,15,16], 
 		"VMS-3.1 - 6.55": [1,2,3]
 	}
+try:
+	cutoff_length = int(read_metadata("Metadata/cutoff_length.csv")[0])
+except OSError as err:
+	print("Caution!!!\nFile 'cutoff_length' not found!\nDefault values used!\nPlease see Readme.md for more information")
+	cutoff_length = 25
+
 ##################### variables to tune based on future changes #####################
 
 ###################################### styles #######################################
@@ -123,8 +131,9 @@ def read_csv(slot_number, log_file_directories):
 		with open(log_file_name, newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
-				if len(row) != 0 and row[3] == "PASS":
+				if len(row) != 0 and len(row) > 4 and row[3] == "PASS":
 					row[2] = float(row[2])
+					row[4] = parser.parse(row[4])
 					log_file_contents.append(row)
 		return log_file_contents
 	except OSError as err:
@@ -210,6 +219,19 @@ def check_and_pad(VMS_records, IPC_records, MKB_records):
 			num_to_pad = maximums[(tc, tc_name)] - MKB_counters[i][(tc, tc_name)]
 			MKB_records[apr_version] = pad(MKB_records[apr_version], tc, tc_name, num_to_pad)	
 	return IPC_records, VMS_records, MKB_records, maximums
+
+def trim_data(records, cutoff_length = 25):
+	records_results = {apr_version: [] for apr_version in apr_versions}
+	all_test_cases = set()
+	for apr_version in apr_versions:
+		for record in records[apr_version]:
+			all_test_cases.update([record[0]])
+	for apr_version in apr_versions:
+		for tc in all_test_cases:
+			selected_records = [record for record in records[apr_version] if record[0] == tc]
+			selected_records = sorted(selected_records, key=lambda elem: elem[4], reverse = True)
+			records_results[apr_version].extend	(selected_records[:cutoff_length])
+	return records_results
 
 def write_header(ws, column_num):
 	# write the header of the data page
@@ -443,50 +465,42 @@ def add_chart_to_FP(ws, chart, x_axis, y_axis, title, order):
 
 def plot_graph(front_ws):
 	# Draw "number of apr versions" * 2 graphs on the front page
-	VMS_mean_chart = BarChart3D()
-	IPC_mean_chart = BarChart3D()
-	MKB_mean_chart = BarChart3D()
-	VMS_stdev_chart = BarChart3D()
-	IPC_stdev_chart = BarChart3D()
-	MKB_stdev_chart = BarChart3D()
+	mean_chart = BarChart3D()
+	stdev_chart = BarChart3D()
 
 	num_vers = len(apr_versions)
 	for i in range(num_vers):
 		VMS_start_column = 3 + i * 6
 		values = Reference(front_ws, min_col=VMS_start_column, min_row=5, max_col=VMS_start_column, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		VMS_mean_chart.append(series)
+		series = Series(values, title="VMS: " + apr_versions[i])
+		mean_chart.append(series)
 		values = Reference(front_ws, min_col=VMS_start_column + 1, min_row=5, max_col=VMS_start_column + 1, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		VMS_stdev_chart.append(series)
-
+		series = Series(values, title="VMS: " + apr_versions[i])
+		stdev_chart.append(series)
+	for i in range(num_vers):
 		IPC_start_column = 5 + i * 6
 		values = Reference(front_ws, min_col=IPC_start_column, min_row=5, max_col=IPC_start_column, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		IPC_mean_chart.append(series)
+		series = Series(values, title="IPC: " + apr_versions[i])
+		mean_chart.append(series)
 		values = Reference(front_ws, min_col=IPC_start_column + 1, min_row=5, max_col=IPC_start_column + 1, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		IPC_stdev_chart.append(series)
-
+		series = Series(values, title="IPC: " + apr_versions[i])
+		stdev_chart.append(series)
+	for i in range(num_vers):
 		MKB_start_column = 7 + i * 6
 		values = Reference(front_ws, min_col=MKB_start_column, min_row=5, max_col=MKB_start_column, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		MKB_mean_chart.append(series)
+		series = Series(values, title="IPC: " + apr_versions[i])
+		mean_chart.append(series)
 		values = Reference(front_ws, min_col=MKB_start_column + 1, min_row=5, max_col=MKB_start_column + 1, max_row=front_ws.max_row)
-		series = Series(values, title=apr_versions[i])
-		MKB_stdev_chart.append(series)		
+		series = Series(values, title="IPC: " + apr_versions[i])
+		stdev_chart.append(series)
 
 	x_axis = Reference(front_ws, min_col=2, min_row=5, max_col=2, max_row=front_ws.max_row)
 	y_axis = 'Time(Secs)'
 	
 	title = " :: " + " vs ".join(apr_versions) + " - Uptime 1 hour"
 
-	add_chart_to_FP(front_ws, VMS_mean_chart, x_axis, y_axis, "VMS - Mean" + title, 0)
-	add_chart_to_FP(front_ws, IPC_mean_chart, x_axis, y_axis, "IPC - Mean" + title, 1)
-	add_chart_to_FP(front_ws, MKB_mean_chart, x_axis, y_axis, "MKB - Mean" + title, 2)
-	add_chart_to_FP(front_ws, VMS_stdev_chart, x_axis, y_axis, "VMS - stdev" + title, 3)
-	add_chart_to_FP(front_ws, IPC_stdev_chart, x_axis, y_axis, "IPC - stdev" + title, 4)
-	add_chart_to_FP(front_ws, MKB_stdev_chart, x_axis, y_axis, "MKB - stdev" + title, 5)
+	add_chart_to_FP(front_ws, mean_chart, x_axis, y_axis, "Mean" + title, 0)
+	add_chart_to_FP(front_ws, stdev_chart, x_axis, y_axis, "STDEV" + title, 1)
 
 def write_front_page(front_ws, data_ws, maximums):
 	write_header_FP(front_ws)
@@ -501,6 +515,11 @@ def write_report():
 	print("Data parsing in progress..."); sys.stdout.flush()
 
 	IPC_records, VMS_records, MKB_records = collect_from_csv("logs")
+
+	# trim each test case to cutoff_length records
+	VMS_records = trim_data(VMS_records, cutoff_length)
+	IPC_records = trim_data(IPC_records, cutoff_length)
+	MKB_records = trim_data(MKB_records, cutoff_length)
 
 	# Check data and pad if necessary
 	VMS_records, IPC_records, MKB_records, maximums = check_and_pad(VMS_records, IPC_records, MKB_records)
