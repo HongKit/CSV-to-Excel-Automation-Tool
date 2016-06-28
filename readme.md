@@ -1,6 +1,6 @@
 ################ Python automated test report generator ################
 
-Version: 0.1
+Version: 0.2
 By: Hong-Kit Wong
 
 Usage:
@@ -32,9 +32,21 @@ Please put the following documents in the designated folder:
 
 	- Metadata/Version_names.csv
 
-		- A csv file which the first ROW contains the APR Version names needed to generate the report
+		- A csv file which contains the APR version names and their corresponding slot numbers
 
-		- Default values: ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
+		- Each line is one APR version
+
+		- Line Format: VMS 4.0-8.05.05, [slot_numbers...]
+
+		- Line Example: VMS 4.0-8.05.05,4,5,6,7,8,9,10,11,12
+
+		- Default values: 
+			apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
+			slots_in_apr = {
+				"VMS 4.0-8.05.05": [4,5,6,7,8,9,10,11,12], 
+				"VMS-APR3.02-6.33.5": [13,14,15,16], 
+				"VMS-3.1 - 6.55": [1,2,3]
+			}
 
 	- Test Descriptions/{}
 
@@ -44,12 +56,11 @@ Please put the following documents in the designated folder:
 
 		- If file is not found for a test case, "No description specified" will be displayed on the spreadsheet
 
-	- logs/{0}/logs{1}.csv
+	- logs/logs{0}.csv
 
 		- The raw log files from the server
 
-		- {0} MUST match the APR Version name defined above (in the metadata section)
-
-		- The range of {1} MUST match the slot numbers defined above (in the metadata section)
+		- The range of {0} MUST match the slot numbers defined above (in the metadata section)
 
 		- Might use the tool Copy logs from server to automatically receive log files from the server
+			- Must run in command line, type ./Copy_logs_from_server.exe for usage guide

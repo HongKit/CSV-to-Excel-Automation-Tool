@@ -7,8 +7,9 @@ import win32wnet
 import argparse
 
 parser = argparse.ArgumentParser(description='Grab log files from production server and store it under logs folder')
-parser.add_argument('APR_Version', nargs='+', help='The APR version that correspond to the log data')
 parser.add_argument('Server_IP', nargs='+', help='The IP address for the server storing log files')
+parser.add_argument('User_name', nargs='+', help='The user name for the storage server')
+parser.add_argument('Password', nargs='+', help='The Password name for the storage server')
 parser.add_argument('remote_path_to_log_files', nargs='+', help='The path on the remote machine that stores the log files')
 
 def netcopy(host, source, dest_dir, username=None, password=None, move=False):
@@ -48,12 +49,13 @@ def wnet_connect(host, username, password):
 
 if __name__ == '__main__':
     try:
-        folder_name = sys.argv[1]
-        server_IP = sys.argv[2]
-        remote_path_to_log_files = sys.argv[3]
+        server_IP = sys.argv[1]
+        server_UName = sys.argv[2]
+        server_password = sys.argv[3]
+        remote_path_to_log_files = sys.argv[4]
         for i in range(1, 17):
             netcopy(server_IP, '{}/logs{}.csv'.format(remote_path_to_log_files , i), \
-                'logs/{}'.format(folder_name), username="StormTestUser", password="user_pwd", move=False)
+                'logs', username=server_UName, password=server_password, move=False)
         print("\n\nCopy Successful!!!\n")
     except IndexError:
         parser.print_help()

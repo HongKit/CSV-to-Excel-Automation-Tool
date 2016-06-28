@@ -16,22 +16,43 @@ def read_metadata(filename):
 	with open(filename, newline='') as csvfile:
 		spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 		return next(spamreader)
+def read_apr_versions_and_slots(filename):
+	apr_versions = []
+	slots_in_apr = {}
+	with open(filename, newline='') as csvfile:
+		spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+		for row in spamreader:
+			slots_in_apr[row[0]] = [int(s) for s in row[1:] if s != ""]
+			apr_versions.append(row[0])
+	return apr_versions, slots_in_apr
 try:
 	VMS_slots = read_metadata("Metadata/VMS_slots.csv")
+	VMS_slots = [int(s) for s in VMS_slots]
 except OSError as err:
+	print("Caution!!!\nFile 'VMS_slots' not found!\nDefault values used!\nPlease see Readme.md for more information")
 	VMS_slots = [1,3,6,9,11,13,15]
 try:
 	IPC_slots = read_metadata("Metadata/IPC_slots.csv")
+	IPC_slots = [int(s) for s in IPC_slots]
 except OSError as err:
+	print("Caution!!!\nFile 'IPC_slots' not found!\nDefault values used!\nPlease see Readme.md for more information")
 	IPC_slots = [2,4,10,12,14,16]
 try:
 	MKB_slots = read_metadata("Metadata/MKB_slots.csv")
+	MKB_slots = [int(s) for s in MKB_slots]
 except OSError as err:
+	print("Caution!!!\nFile 'MKB_slots' not found!\nDefault values used!\nPlease see Readme.md for more information")
 	MKB_slots = [6,7,8] # mockingbird
 try:
-	apr_versions = read_metadata("Metadata/Version_names.csv")
+	apr_versions, slots_in_apr = read_apr_versions_and_slots("Metadata/Version_names.csv")
 except OSError as err:
+	print("Caution!!!\nFile 'Version_names' not found!\nDefault values used!\nPlease see Readme.md for more information")
 	apr_versions = ["VMS 4.0-8.05.05", "VMS-APR3.02-6.33.5", "VMS-3.1 - 6.55"]
+	slots_in_apr = {
+		"VMS 4.0-8.05.05": [4,5,6,7,8,9,10,11,12], 
+		"VMS-APR3.02-6.33.5": [13,14,15,16], 
+		"VMS-3.1 - 6.55": [1,2,3]
+	}
 ##################### variables to tune based on future changes #####################
 
 ###################################### styles #######################################
@@ -95,10 +116,10 @@ def char_range(c1, length):
 def column_num_to_letter(column_num):
 	return list(char_range("A", column_num))[-1]
 
-def read_csv(apr_version, slot_number, log_file_directories):
+def read_csv(slot_number, log_file_directories):
 	try:
 		log_file_contents = []
-		log_file_name = '{}/{}/logs{}.csv'.format(log_file_directories, str(apr_version), str(slot_number))
+		log_file_name = '{}/logs{}.csv'.format(log_file_directories, str(slot_number))
 		with open(log_file_name, newline='') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 			for row in spamreader:
@@ -117,7 +138,9 @@ def collect_from_csv(log_file_directories):
 	MKB_records = {apr_version: [] for apr_version in apr_versions}
 	for apr_version in apr_versions:
 		for slot_number in slot_numbers:
-			log_file_contents = read_csv(apr_version, slot_number, log_file_directories)
+			if slot_number not in slots_in_apr[apr_version]:
+				continue
+			log_file_contents = read_csv(slot_number, log_file_directories)
 			if slot_number in IPC_slots:
 				IPC_records[apr_version].extend(log_file_contents)
 			elif slot_number in VMS_slots:
@@ -127,6 +150,9 @@ def collect_from_csv(log_file_directories):
 	return IPC_records, VMS_records, MKB_records
 
 def pad(records, tc, tc_name, num_to_pad):
+	# pad a specific amount of records
+	# Rules: if there are existing records under same machine^apr_version^tc, take the average to pad
+	# More Rule: if there no existing records, pad with value 0
 	selected_records = [record for record in records if record[0] == tc]
 	if len(selected_records) != 0:
 		avg = mean([float(selected_record[2]) for selected_record in selected_records])
@@ -186,6 +212,7 @@ def check_and_pad(VMS_records, IPC_records, MKB_records):
 	return IPC_records, VMS_records, MKB_records, maximums
 
 def write_header(ws, column_num):
+	# write the header of the data page
 	for ver_count, apr_version in enumerate(apr_versions):
 		ws.cell(row = 1, column = column_num + ver_count).value = apr_versions[ver_count]
 		if ver_count != 0:
@@ -195,11 +222,10 @@ def write_header(ws, column_num):
 				"%Change"
 
 def write_test_data(ws, column_num, records, num_records):
+	# write, row by row, the test data onto the data page
 	for i in range(num_records):
 		for ver_count, apr_version in enumerate(apr_versions):
 			ws.cell(row = i+2, column = column_num + ver_count).value = records[apr_version][i][2]
-
-			# ws.cell(row = i+2, column = column_num + ver_count).value = records[apr_version][i][2]
 			if ver_count != 0:
 				column1 = column_num_to_letter(column_num + ver_count)
 				column2 = column_num_to_letter(column_num)
@@ -232,7 +258,8 @@ def write_contents(ws, IPC_records, VMS_records, MKB_records):
 	write_test_data(ws, column_VMS, VMS_records, num_records)
 	write_test_data(ws, column_IPC, IPC_records, num_records)
 	write_test_data(ws, column_MKB, MKB_records, num_records)
-	
+
+### style format functions for data page
 def paint_and_format_data(ws, column_num, red_zone_width, paint, i):
 	for letter in char_range(column_num_to_letter(column_num), red_zone_width):
 		ws['{}{}'.format(letter, i)].fill = paint
@@ -245,6 +272,7 @@ def format_sheet(ws):
 	column_IPC = column_VMS + red_zone_width
 	column_MKB = column_IPC + red_zone_width
 
+	# paint header
 	for letter in char_range("A", red_zone_width+2):
 		ws['{}1'.format(letter)].fill = green_fill
 	for letter in char_range(column_num_to_letter(column_IPC), red_zone_width):
@@ -254,6 +282,7 @@ def format_sheet(ws):
 	for letter in char_range("A", red_zone_width * 3 + 2):
 		ws.column_dimensions[letter].width = 15
 
+	# paint data
 	for i in range(2, ws.max_row+1):
 		paint_and_format_data(ws, column_VMS, red_zone_width, pale_green_fill, i)
 		paint_and_format_data(ws, column_IPC, red_zone_width, pale_red_fill, i)
@@ -262,6 +291,7 @@ def format_sheet(ws):
 			ws['A{}'.format(i)].fill = light_blue_fill
 			ws['B{}'.format(i)].fill = light_blue_fill
 	
+	# set alignment and border
 	for i in range(1, ws.max_column+1):
 		letter = get_column_letter(i)
 		for j in range(1, ws.max_row+1):
@@ -269,6 +299,7 @@ def format_sheet(ws):
 			if j == 1:
 				ws["{}{}".format(letter,j)].alignment = Alignment(wrapText=True)
 	
+	# set dimensions
 	ws.row_dimensions[1].height = 60
 	ws.column_dimensions["A"].width = 6
 	ws.column_dimensions["B"].width = 50
@@ -280,6 +311,7 @@ def write_report_data_page(ws, IPC_records, VMS_records, MKB_records):
 
 ############################### front page functions ################################
 def write_header_FP(ws):
+	# Write the Front page header
 	ws.merge_cells("A1:A4")
 	ws.merge_cells("B1:B4")
 
@@ -306,6 +338,7 @@ def write_header_FP(ws):
 	    ws.append(row)
 
 def read_from_des_txt(tc):
+	# Open the corresponding file for the tc and read the test description
 	try:
 		f = open('Test Descriptions/{}.txt'.format(tc), 'r')
 		result = f.read()
@@ -314,7 +347,8 @@ def read_from_des_txt(tc):
 		result = "No description specified"
 	return result
 
-def write_front_page_data(front_ws, data_ws, maximums):
+def write_front_page_data(front_ws, data_ws, maximums):\
+	# Write the data section in the front page
 	test_head_row_numbers = []
 	tc_s = []
 	tc_names = []
@@ -352,6 +386,8 @@ def write_front_page_data(front_ws, data_ws, maximums):
 		front_ws.append(row)
 
 def format_FP(front_ws):
+	# Formatting of the front page
+	# What a mess... Might need to refactor it in the future
 	for i in range(1, front_ws.max_column+1):
 		letter = get_column_letter(i)
 		num_vers = len(apr_versions)
@@ -397,6 +433,7 @@ def format_FP(front_ws):
 	front_ws["A1"].alignment = Alignment(horizontal="center", vertical="center", wrapText=True)
 
 def add_chart_to_FP(ws, chart, x_axis, y_axis, title, order):
+	# Draw a chart in the Front Page
 	chart.set_categories(x_axis)
 	chart.y_axis.title = y_axis
 	chart.title = title
@@ -405,6 +442,7 @@ def add_chart_to_FP(ws, chart, x_axis, y_axis, title, order):
 	ws.add_chart(chart, "B{}".format(ws.max_row + 3 + 30 * order))
 
 def plot_graph(front_ws):
+	# Draw "number of apr versions" * 2 graphs on the front page
 	VMS_mean_chart = BarChart3D()
 	IPC_mean_chart = BarChart3D()
 	MKB_mean_chart = BarChart3D()
@@ -467,7 +505,7 @@ def write_report():
 	# Check data and pad if necessary
 	VMS_records, IPC_records, MKB_records, maximums = check_and_pad(VMS_records, IPC_records, MKB_records)
 
-	# testing purpose
+	# testing purpose only
 	# see_counters(VMS_records, IPC_records, MKB_records, maximums)
 
 	# sort each list in each dict by the first column
